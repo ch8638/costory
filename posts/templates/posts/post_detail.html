@@ -1,0 +1,10 @@
+{% extends './base.html' %}
+
+{% block post_container %}
+    <h2>{{ post.title }}</h2>
+    <div>작성일: {{ post.dt_created }}</div>
+    <hr>
+    <div>{{ post.content | linebreaksbr}}</div>  {# linebreaksbr : 줄바꿈 문자 '/n'을 '<br>'태그로 변경 #}
+    <hr>
+    <a href={% url 'post-list' %}>돌아가기</a>
+{% endblock post_container %}

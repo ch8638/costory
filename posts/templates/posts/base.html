@@ -1,11 +1,38 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <title>코스토리</title>
     <meta charset="UTF-8">
-    <title>Costory :: 코스토리</title>
+    {% block css %}  {# HTML 파일마다 다른 스타일을 적용해 주기 위한 블록 #}
+    {% endblock css %}
+    <link rel="stylesheet" type="text/css"
+    href="https://fonts.googleapis.com/earlyaccess/nanummyeongjo.css">
 </head>
 <body>
-    {% block post_container %}
-    {% endblock post_container %}
+   <div id="warp">
+        <div id="header">
+            <div id="nav">
+                <div class="logo">
+                    <a href="{% url 'post-list' %}"><img src="{% static 'posts/images/logo.png' %}"></a>
+                </div>
+            </div>
+            {% block post_header %}  {# 상세페이지 위에 제목을 넣어주기 위한 블록 #}
+            {% endblock post_header %}
+        </div>
+        {% block logo_text %}  {# 글목록 페이지 상단 로고 블록 #}
+        {% endblock logo_text %}
+        <div id="content">
+            <div class="container">
+                {% block content %}  {# 포스트 내용이 들어갈 블록 #}
+                {% endblock content %}
+            </div>
+        </div>
+        <div id="footer">
+            <div class="footer">
+                <p>Costory</p>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

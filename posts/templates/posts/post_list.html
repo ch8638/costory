@@ -1,19 +1,37 @@
 {% extends './base.html' %}
+{% load static %}
 
-{%  block post_container %}
-    <h3>글 목록 페이지에요</h3>
-    <table>
-        <tr>
-            <td>제목</td>
-            <td>작성일</td>
-            <td>수정일</td>
-        </tr>
-        {% for post in posts %}
-            <tr>
-                <td><a href={% url 'post-detail' post.id %}>{{ post.title }}</a></td>
-                <td>{{ post.dt_created }}</td>
-                <td>{{ post.dt_modified }}</td>  {# <br/> : 줄바꿈 태그 #}
-            </tr>
-        {% endfor %}
-    </table>
-{% endblock post_container %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'posts/css/post_list.css' %}">
+{% endblock css %}
+
+{% block logo_text %}
+    <div id="header">
+        <div class="container">
+            <h1><img src="{% static 'posts/images/headertxt.png' %}"></h1>
+        </div>
+    </div>
+{% endblock logo_text %}
+
+
+{% block content %}
+    <div class="btn_post">
+        <a href="{% url 'post-create' %}">글쓰기</a>
+    </div>
+    {% if posts %}  {# 저장된 데이터(게시물)가 있는 경우 #}
+        <div class="post_container">
+            {% for post in posts %}
+                <div class="post"><a href="{% url 'post-detail' post.id %}">
+                    <h2 class="title">{{ post.title }}</h2>
+                    <p class="date">{{ post.dt_created }}</p>
+                    <p class="text">{{ post.content | slice:"100"}}</p>  {# 인덱스 0~99까지 슬라이싱 #}
+                </a></div>
+            {% endfor %}
+        </div>
+    {% else %}  {# 저장된 데이터(게시물)가 없는 경우 #}
+        <div class="blank">
+            <p>보여줄 글이 없어요.<br>첫 글을 작성해보면 어떨까요?</p>
+        </div>
+    {% endif %}
+
+{% endblock content %}

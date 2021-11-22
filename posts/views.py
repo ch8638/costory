@@ -2,11 +2,17 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404
 from .models import Post
 from .forms import PostForm
+from django.core.paginator import Paginator
 
 
 # Create your views here.
+def index(request):
+    return redirect('post-list')
+
+
 def post_list(request):
     posts = Post.objects.all()
+    paginator = Paginator(posts, 6)
     context = {"posts": posts}
     return render(request, 'posts/post_list.html', context)
 
@@ -51,5 +57,4 @@ def post_delete(request, post_id):
         return render(request, 'posts/post_confirm_delete.html', {'post': post})
 
 
-def index(request):
-    return redirect('post-list')
+

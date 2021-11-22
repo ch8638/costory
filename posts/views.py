@@ -1,8 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404
+from django.core.paginator import Paginator
+from django.views import View
+from django.views.generic import CreateView
+from django.urls import reverse
 from .models import Post
 from .forms import PostForm
-from django.core.paginator import Paginator
 
 
 # Create your views here.
@@ -13,8 +16,11 @@ def index(request):
 def post_list(request):
     posts = Post.objects.all()
     paginator = Paginator(posts, 6)
-    context = {"posts": posts}
-    return render(request, 'posts/post_list.html', context)
+    curr_page_number = request.GET.get('page')  # GET 방식으로 전달
+    if curr_page_number is None:
+        curr_page_number = 1
+    page = paginator.page(curr_page_number)
+    return render(request, 'posts/post_list.html', {'page': page})
 
 
 def post_detail(request, post_id):
@@ -22,16 +28,42 @@ def post_detail(request, post_id):
     context = {"post": post}
     return render(request, 'posts/post_detail.html', context)
 
+# 함수형 뷰
+# def post_create(request):
+#     if request.method == 'POST':  # http 전달 방식이 POST 이면
+#         post_form = PostForm(request.POST)
+#         if post_form.is_valid():  # 유효성 검사
+#             new_post = post_form.save()
+#             return redirect('post-detail', post_id=new_post.id)
+#     else:  # http 전달 방식이 GET 이면
+#         post_form = PostForm()  # 빈 폼 불러오기
+#     return render(request, 'posts/post_form.html', {'form': post_form})
 
-def post_create(request):
-    if request.method == 'POST':  # http 전달 방식이 POST 이면
-        post_form = PostForm(request.POST)
-        if post_form.is_valid():  # 유효성 검사
-            new_post = post_form.save()
-            return redirect('post-detail', post_id=new_post.id)
-    else:  # http 전달 방식이 GET 이면
-        post_form = PostForm()  # 빈 폼 불러오기
-    return render(request, 'posts/post_form.html', {'form': post_form})
+
+# 클래스형 뷰
+# class PostCreateView(View):
+#     def get(self, request):  # GET 방식
+#         post_form = PostForm()  # 빈 폼 불러오기
+#         return render(request, 'posts/post_form.html', {'form': post_form})
+#
+#     def post(self, request):  # POST 방식
+#         post_form = PostForm(request.POST)
+#         if post_form.is_valid():  # 유효성 검사
+#             new_post = post_form.save()
+#             return redirect('post-detail', post_id=new_post.id)
+#         return render(request, 'posts/post_form.html', {'form': post_form})
+
+
+# 제네릭 뷰
+class PostCreateView(CreateView):
+    model = Post
+    form_class = PostForm
+    template_name = 'posts/post_form.html'
+
+    def get_success_url(self):
+        return reverse('post-detail', kwargs={'post_id': self.object.id})
+        # reverse: url 네임으로부터 거슬러 올라가서 url을 찾는다.
+        # kwargs : 사전형으로 키워드를 이용해서 값을 전달할 때 사용하는 인자
 
 
 def post_update(request, post_id):

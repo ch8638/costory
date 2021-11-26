@@ -18,9 +18,9 @@
     <div class="btn_post">
         <a href="{% url 'post-create' %}">글쓰기</a>
     </div>
-    {% if page.object_list %}  {# 저장된 데이터(게시물)가 있는 경우 #}
+    {% if page_obj.object_list %}  {# 저장된 데이터(게시물)가 있는 경우 #}
         <div class="post_container">
-            {% for post in page.object_list %}
+            {% for post in page_obj.object_list %}
                 <div class="post"><a href="{% url 'post-detail' post.id %}">
                     <h2 class="title">{{ post.title }}</h2>
                     <p class="date">{{ post.dt_created }}</p>
@@ -29,16 +29,16 @@
             {% endfor %}
         </div>
         <div class="paginator">
-        {% if page.has_previous %}
+        {% if page_obj.has_previous %}
             <a href="?page=1" class="first">first</a>
-            <a href="?page={{ page.previous_page_number }}" class="prev">prev</a>
+            <a href="?page={{ page_obj.previous_page_number }}" class="prev">prev</a>
         {% endif %}
         <span>
-            <p>{{ page.number }} of {{ page.paginator.num_pages }}</p>
+            <p>{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
         </span>
-        {% if page.has_next %}
-            <a href="?page={{ page.next_page_number }}" class="next">next</a>
-            <a href="?page={{ page.paginator.num_pages }}" class="last">last</a>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="next">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}" class="last">last</a>
         {% endif %}
         </div>
     {% else %}  {# 저장된 데이터(게시물)가 없는 경우 #}
@@ -48,3 +48,40 @@
     {% endif %}
 
 {% endblock content %}
+
+
+{# 함수형 뷰(views.post_list) 사용 시 #}
+{#{% block content %}#}
+{#    <div class="btn_post">#}
+{#        <a href="{% url 'post-create' %}">글쓰기</a>#}
+{#    </div>#}
+{#    {% if page.object_list %}  {# 저장된 데이터(게시물)가 있는 경우 #}
+{#        <div class="post_container">#}
+{#            {% for post in page.object_list %}#}
+{#                <div class="post"><a href="{% url 'post-detail' post.id %}">#}
+{#                    <h2 class="title">{{ post.title }}</h2>#}
+{#                    <p class="date">{{ post.dt_created }}</p>#}
+{#                    <p class="text">{{ post.content | slice:"100"}}</p>  {# 인덱스 0~99까지 슬라이싱 #}
+{#                </a></div>#}
+{#            {% endfor %}#}
+{#        </div>#}
+{#        <div class="paginator">#}
+{#        {% if page.has_previous %}#}
+{#            <a href="?page=1" class="first">first</a>#}
+{#            <a href="?page={{ page.previous_page_number }}" class="prev">prev</a>#}
+{#        {% endif %}#}
+{#        <span>#}
+{#            <p>{{ page.number }} of {{ page.paginator.num_pages }}</p>#}
+{#        </span>#}
+{#        {% if page.has_next %}#}
+{#            <a href="?page={{ page.next_page_number }}" class="next">next</a>#}
+{#            <a href="?page={{ page.paginator.num_pages }}" class="last">last</a>#}
+{#        {% endif %}#}
+{#        </div>#}
+{#    {% else %}  {# 저장된 데이터(게시물)가 없는 경우 #}
+{#        <div class="blank">#}
+{#            <p>보여줄 글이 없어요.<br>첫 글을 작성해보면 어떨까요?</p>#}
+{#        </div>#}
+{#    {% endif %}#}
+{##}
+{#{% endblock content %}#}
